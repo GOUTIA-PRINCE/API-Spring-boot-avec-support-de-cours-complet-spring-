@@ -60,7 +60,7 @@ public class UserController {
         }
     }
 
-    //suppresion d'un utilisateur a partir de son id
+    //supperesion d'un utilisateur a partir de son id
     @DeleteMapping("{id}")
       public ResponseEntity<User>  DeleteUser(@PathVariable Long id) {
         User DeleteUser = userService.DeleteUser(id);
