@@ -4,6 +4,7 @@ import com.Edulink.CRUD.Entite.User;
 import com.Edulink.CRUD.Repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -14,10 +15,12 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    //injection du repository
+    //injection des classe utiles
     private final UserRepository userRepository;
-    public UserService(UserRepository userRepository) {
+    private final BCryptPasswordEncoder PasswordEncoder;
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder PasswordEncoder) {
         this.userRepository = userRepository;
+        this.PasswordEncoder = PasswordEncoder;
     }
 
     //Recuperation de tous les utilisateurs
@@ -26,8 +29,9 @@ public class UserService {
     }
 
     //Recuperation d'un utilisateur
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable avec l'id : " + id));
     }
 
     //definition de la methode pour enregistrer un utilisateur
@@ -37,15 +41,13 @@ public class UserService {
 
     //modification d'un utilisateur
     public User UpdateUser(Long id,User userDetails) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            //ajout des details de l'utilisateur
-            user.get().setName(userDetails.getName());
-            user.get().setEmail(userDetails.getEmail());
-            user.get().setPassword(userDetails.getPassword());
-            return userRepository.save(user.get());
-        }
-        return null;
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable avec l'id : " + id));
+
+            user.setName(userDetails.getName());;
+            user.setEmail(userDetails.getEmail());
+            user.setPassword(PasswordEncoder.encode(userDetails.getPassword()));
+            return userRepository.save(user);
     }
 
     //suppression d'un utilisateur

@@ -32,13 +32,7 @@ public class UserController {
     //recuperation d'un utilisateur a partir de son ID
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        Optional<User> user = userService.getUserById(id);
-        if (user.isPresent()) {
-            return new ResponseEntity<>(user.get(), HttpStatus.OK);
-        }
-        else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
 
     //ajout d'un nouveau utilisateur
