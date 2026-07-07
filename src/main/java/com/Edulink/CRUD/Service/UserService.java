@@ -49,10 +49,14 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable avec l'id : " + id));
 
-            user.setName(userDetails.getName());;
-            user.setEmail(userDetails.getEmail());
-            user.setPassword(PasswordEncoder.encode(userDetails.getPassword()));
-            return userRepository.save(user);
+        if(userRepository.findByEmail(userDetails.getEmail()) != null && user.getEmail().equals(userDetails.getEmail())) {
+            throw new RuntimeException("Un utilisateur existe deja avec cet email : " + userDetails.getEmail());
+        }
+
+        user.setName(userDetails.getName());;
+        user.setEmail(userDetails.getEmail());
+        user.setPassword(PasswordEncoder.encode(userDetails.getPassword()));
+        return userRepository.save(user);
     }
 
     //suppression d'un utilisateur
