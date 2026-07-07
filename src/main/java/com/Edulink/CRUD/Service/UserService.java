@@ -36,6 +36,11 @@ public class UserService {
 
     //definition de la methode pour enregistrer un utilisateur
     public User AddUser(User user) {
+
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new RuntimeException("Un utilisateur existe deja avec cet email : " + user.getEmail());
+        }
+        user.setPassword(PasswordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -52,11 +57,9 @@ public class UserService {
 
     //suppression d'un utilisateur
     public User DeleteUser(Long id) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
+        User user = userRepository.findById(id)
+                .orElseThrow(()->new RuntimeException("Utilisateur introuvable avec l'id : " + id));
              userRepository.deleteById(id);
-             return  user.get();
-        }
-            return null;
+             return  user;
     }
 }

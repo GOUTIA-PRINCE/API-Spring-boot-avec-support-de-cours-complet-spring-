@@ -44,26 +44,13 @@ public class UserController {
     //modifier un utilisateur existent
     @PutMapping("{id}")
     public ResponseEntity<User> UpdateUser(@PathVariable Long id, @RequestBody User user) {
-
-        User updateUser = userService.UpdateUser(id, user);
-        if (updateUser != null) {
-            return new ResponseEntity<>(updateUser, HttpStatus.OK);
-        }
-        else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(userService.UpdateUser(id, user), HttpStatus.OK);
     }
 
     //supperesion d'un utilisateur a partir de son id
     @DeleteMapping("{id}")
       public ResponseEntity<User>  DeleteUser(@PathVariable Long id) {
-        User DeleteUser = userService.DeleteUser(id);
-          if (DeleteUser != null) {
-              return new ResponseEntity<>(DeleteUser, HttpStatus.OK);
-          }
-          else {
-              return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-          }
-      }
+        return new ResponseEntity<>(userService.DeleteUser(id), HttpStatus.OK);
+    }
 
 }
